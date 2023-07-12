@@ -1,0 +1,40 @@
+int func(int a, int b) {
+	if (a > b) {
+		return a;
+	} else {
+		return b;
+	}
+	while (true) {
+		// do smth
+	}
+	while (1) {
+		// do smth
+	}
+	while (a > b) {
+		// do smth
+	}
+	++a;
+	a++;
+	return a + b;
+}
+namespace Math {
+    struct test {
+        int a;
+    }
+   class MyClass {
+	public:
+		MyClass(int a) {
+		}
+		~MyClass() {
+			// destructor code here
+		}
+		int a;
+	protected: 
+		int b;
+	private:
+		int c;
+   };
+}
+
+int main() {
+}
