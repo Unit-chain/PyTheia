@@ -4,6 +4,7 @@ from lexer import tokens  # assuming your lexer is in lexer.py
 precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
+    ('left', 'BIT_SHIFT_RIGHT', 'BIT_SHIFT_LEFT', 'AND', 'OR', 'XOR'),
 )
 
 def p_program(p):
@@ -50,20 +51,6 @@ def p_member(p):
     'member : TYPE IDENTIFIER SEMICOLON'
     p[0] = ('member', p[1], p[2])
 
-def p_statement_class(p):
-    'statement : CLASS IDENTIFIER LBRACE class_body RBRACE SEMICOLON'
-    p[0] = ('class', p[2], p[4])
-
-def p_class_body(p):
-    '''class_body : access_specifier_block
-                  | class_body access_specifier_block
-                  | statement
-                  | class_body statement'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[2]]
-
 def p_statement_function_no_params(p):
     'statement : TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE'
     p[0] = ('function', p[1], p[2], [], p[6])
@@ -90,7 +77,20 @@ def p_statement_assign(p):
 
 def p_expression_binop(p):
     '''expression : expression PLUS expression
-                  | expression MINUS expression'''
+                  | expression MINUS expression
+                  | expression TIMES expression
+                  | expression DIVIDE expression
+                  | expression EQ expression
+                  | expression NEQ expression
+                  | expression LESS_THAN expression
+                  | expression GREATER_THAN expression
+                  | expression LTE expression
+                  | expression GTE expression
+                  | expression BIT_SHIFT_RIGHT expression
+                  | expression BIT_SHIFT_LEFT expression
+                  | expression AND expression
+                  | expression OR expression
+                  | expression XOR expression'''
     p[0] = (p[2], p[1], p[3])
 
 def p_expression_identifier(p):
@@ -100,19 +100,6 @@ def p_expression_identifier(p):
 def p_statement_return(p):
     'statement : RETURN expression SEMICOLON'
     p[0] = ('return', p[2])
-
-def p_expression_binop(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression TIMES expression
-                  | expression DIVIDE expression
-                  | expression EQ expression
-                  | expression NEQ expression
-                  | expression LESS_THAN expression
-                  | expression GREATER_THAN expression
-                  | expression LTE expression
-                  | expression GTE expression'''
-    p[0] = (p[2], p[1], p[3])
 
 def p_statement_if(p):
     'statement : IF LPAREN expression RPAREN LBRACE statements RBRACE'
@@ -142,10 +129,6 @@ def p_declaration(p):
     'declaration : TYPE IDENTIFIER SEMICOLON'
     p[0] = ('declare', p[1], p[2])
 
-#def p_statement_for(p):
-#    'statement : FOR LPAREN statement expression SEMICOLON statement RPAREN LBRACE statements RBRACE'
-#    p[0] = ('for', p[3], p[4], p[6], p[9])
-
 def p_declaration_init(p):
     'declaration : TYPE IDENTIFIER EQUALS expression SEMICOLON'
     p[0] = ('declare_init', p[1], p[2], p[4])
@@ -167,14 +150,44 @@ def p_expression_number(p):
     'expression : NUMBER'
     p[0] = ('number', p[1])
 
-def p_statement_constructor(p):
-    'statement : CONSTRUCTOR LPAREN parameters RPAREN LBRACE statements RBRACE'
-    p[0] = ('constructor', p[1], p[3], p[6])
+def p_statement_interface(p):
+    'statement : INTERFACE IDENTIFIER LBRACE members RBRACE SEMICOLON'
+    p[0] = ('interface', p[2], p[4])
 
-def p_statement_destructor(p):
-    'statement : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE'
-    p[0] = ('destructor', p[1], p[6])
+def p_constructor(p):
+    'constructor : CONSTRUCTOR LPAREN parameters RPAREN LBRACE statements RBRACE'
+    p[0] = ('constructor', p[3], p[6])
 
+def p_destructor(p):
+    'destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE'
+    p[0] = ('destructor', p[6])
+
+# Add to your class_body function
+def p_struct_body(p):
+    '''struct_body : access_specifier_block
+                   | struct_body access_specifier_block
+                   | statement
+                   | struct_body statement
+                   | constructor
+                   | struct_body constructor
+                   | destructor
+                   | struct_body destructor'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[2]]
+
+def p_statement_template_struct(p):
+    'statement : TEMPLATE LESS_THAN IDENTIFIER GREATER_THAN STRUCT IDENTIFIER IMPLEMENTS IDENTIFIER LBRACE struct_body RBRACE'
+    p[0] = ('template_struct', p[3], ('struct', p[6], p[10]), p[8])
+
+def p_statement_method_implementation(p):
+    'statement : IDENTIFIER COLON COLON IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE'
+    p[0] = ('method_impl', p[1], p[4], p[6], p[9])
+
+def p_statement_function_call(p):
+    'statement : IDENTIFIER DOT IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
+    p[0] = ('function_call', p[1], p[3], p[5])
 def p_empty(p):
     'empty :'
     pass
@@ -186,5 +199,4 @@ def p_error(p):
         print("Syntax error at EOF")
 
 parser = yacc.yacc()
-
 

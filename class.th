@@ -1,40 +1,39 @@
-int func(int a, int b) {
-	if (a > b) {
-		return a;
-	} else {
-		return b;
+typedef int myInt;
+
+namespace Math {	
+	interface MyInterface {
+		    int myMethod();
 	}
-	while (true) {
-		// do smth
-	}
-	while (1) {
-		// do smth
-	}
-	while (a > b) {
-		// do smth
-	}
-	++a;
-	a++;
-	return a + b;
-}
-namespace Math {
-    struct test {
-        int a;
-    }
-   class MyClass {
-	public:
-		MyClass(int a) {
+	template<T>
+	struct Point implements MyInterface {
+		constructor(int a, int b) {
+			this->x = a;
+			this->b = b;
 		}
-		~MyClass() {
-			// destructor code here
+		destructor {
+			
 		}
-		int a;
-	protected: 
+		int x; 
 		int b;
-	private:
-		int c;
-   };
+		int myMethod(int a, int b);	
+	hidden:
+		uint64 y;
+	};
+	int Point::myMethod(int a, int b) {
+		return 10;
+	} 
 }
 
 int main() {
+	Math::Point myObject = Math::Point(10);
+	Math::Poinr myObject;
+	int a = b << 2;
+	int c = d >> 2;
+	int e = f ^ g;
+	int h = i & j;
+	int k = l | m;
+	myObject.myMethod(10, 20);
+	if (true && false && (true || false)) {
+
+	}
 }

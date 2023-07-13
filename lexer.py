@@ -1,7 +1,8 @@
 import argparse
 import ply.lex as lex
 
-# List of token names
+# Here's the updated code with your requested changes:
+
 tokens = (
     'NUMBER',
     'PLUS',
@@ -21,7 +22,6 @@ tokens = (
     'TYPE',
     'STRUCT',
     'NAMESPACE',
-    'CLASS',
     'INTERFACE',
     'ACCESS_SPECIFIER',
     'TEMPLATE',
@@ -33,8 +33,6 @@ tokens = (
     'NEQ',
     'LTE',
     'GTE',
-    'INLINE',
-    'EXTENDS',
     'NAMESPACE_OPERATOR',
     'FOR',
     'WHILE',
@@ -43,8 +41,6 @@ tokens = (
     'RBRACKET',
     'TYPEDEF',
     'INCLUDE',
-    'CONSTRUCTOR',
-    'DESTRUCTOR',
     'THIS',
     'INCREMENT',
     'DECREMENT',
@@ -58,17 +54,20 @@ tokens = (
     'XOR',
     'AND',
     'OR',
-    'MEMBER_ACCESS',
     'MEMBER_FUNCTION_ACCESS',
-    'LOGICAL_AND',
-    'LOGICAL_OR',
+    'MEMBER_ACCESS',
     'TRUE',
     'FALSE',
-    'LOGICAL_AND', 
+    'LOGICAL_AND',
     'LOGICAL_OR',
+    'IMPLEMENTS',
+    'CONSTRUCTOR',
+    'DESTRUCTOR',
+    'FUNCTION_DECLARATION',
+    'HIDDEN',
+    'DOT'
 )
 
-# Regular expression rules for simple tokens
 t_PLUS               = r'\+'
 t_MINUS              = r'-'
 t_TIMES              = r'\*'
@@ -83,7 +82,6 @@ t_RBRACE             = r'\}'
 t_SEMICOLON          = r';'
 t_COMMA              = r','
 t_IDENTIFIER         = r'[a-zA-Z_][a-zA-Z_0-9]*'
-t_ACCESS_SPECIFIER   = r'\b(public|protected|private)\b'
 t_LESS_THAN          = r'<'
 t_GREATER_THAN       = r'>'
 t_EQ                 = r'=='
@@ -93,9 +91,12 @@ t_GTE                = r'>='
 t_NAMESPACE_OPERATOR = r'::'
 t_LBRACKET           = r'\['
 t_RBRACKET           = r'\]'
+t_LOGICAL_AND        = r'&&'
+t_LOGICAL_OR         = r'\|\|'
+t_DOT                = r'\.'
 
 def t_TYPE(t):
-    r'\b(int|void|char|long|uint128|uint256|uint64|uint32|bool)\b'
+    r'\b(int|void|char|long|uint128|uint256|uint64|uint32)\b'
     return t
 
 def t_STRUCT(t):
@@ -104,10 +105,6 @@ def t_STRUCT(t):
 
 def t_NAMESPACE(t):
     r'\bnamespace\b'
-    return t
-
-def t_CLASS(t):
-    r'\bclass\b'
     return t
 
 def t_INTERFACE(t):
@@ -124,14 +121,6 @@ def t_IF(t):
 
 def t_ELSE(t):
     r'\belse\b'
-    return t
-
-def t_INLINE(t):
-    r'\binline\b'
-    return t
-
-def t_EXTENDS(t):
-    r'\bextends\b'
     return t
 
 def t_FOR(t):
@@ -152,14 +141,6 @@ def t_TYPEDEF(t):
 
 def t_INCLUDE(t):
     r'\#include \<[a-zA-Z0-9\.]+\>'
-    return t
-
-def t_CONSTRUCTOR(t):
-    r'\b([A-Z][a-zA-Z_0-9]*)\b(?=\s*\()'
-    return t
-
-def t_DESTRUCTOR(t):
-    r'~\b([A-Z][a-zA-Z_0-9]*)\b(?=\s*\()'
     return t
 
 def t_THIS(t):
@@ -239,22 +220,6 @@ def t_XOR(t):
     r'\^'
     return t
 
-def t_MEMBER_FUNCTION_ACCESS(t):
-    r'\.[a-zA-Z_][a-zA-Z_0-9]*\([^\)]*\)'
-    return t
-
-def t_MEMBER_ACCESS(t):
-    r'\.[a-zA-Z_][a-zA-Z_0-9]*'
-    return t
-
-def t_LOGICAL_AND(t):
-    r'&&'
-    return t
-
-def t_LOGICAL_OR(t):
-    r'\|\|'
-    return t
-
 def t_AND(t):
     r'&'
     return t
@@ -263,6 +228,33 @@ def t_OR(t):
     r'\|'
     return t
 
+def t_MEMBER_FUNCTION_ACCESS(t):
+    r'\.[a-zA-Z_][a-zA-Z_0-9]*\([^\)]*\)'
+    return t
+
+def t_MEMBER_ACCESS(t):
+    r'\.[a-zA-Z_][a-zA-Z_0-9]*'
+    return t
+
+def t_IMPLEMENTS(t):
+    r'\bimplements\b'
+    return t
+
+def t_CONSTRUCTOR(t):
+    r'\bconstructor\b'
+    return t
+
+def t_DESTRUCTOR(t):
+    r'\bdestructor\b'
+    return t
+
+def t_HIDDEN(t):
+    r'\bhidden\b'
+    return t
+
+def t_DOR(t):
+    r'\.'
+    return t
 # Build the lexer
 lexer = lex.lex()
 
