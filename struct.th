@@ -1,0 +1,13 @@
+typedef int myInt;
+
+namespace Math {	
+	template<T>
+	struct Point {
+		int x; 
+		int b;
+		int myMethod(int a, int b);	
+//	hidden:
+		uint64 y;
+	};
+}
+

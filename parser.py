@@ -35,17 +35,33 @@ def p_statements(p):
     else:
         p[0] = p[1] + [p[2]]
 
+def p_template(p):
+    'template : TEMPLATE LESS_THAN IDENTIFIER GREATER_THAN'
+    p[0] = ('template', p[3])
+
+def p_statement_template_struct(p):
+    'statement : template STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON'
+    p[0] = ('template_struct', p[1], ('struct', p[3], p[5]))
+
+
 def p_statement_struct(p):
-    'statement : STRUCT IDENTIFIER LBRACE members RBRACE'
+    'statement : STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON'
     p[0] = ('struct', p[2], p[4])        
+
 
 def p_members(p):
     '''members : member
-               | members member'''
+               | members member
+               | method_declaration
+               | members method_declaration'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[2]]
+
+def p_method_declaration(p):
+    'method_declaration : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
+    p[0] = ('method_declaration', p[1], p[2], p[4])
 
 def p_member(p):
     'member : TYPE IDENTIFIER SEMICOLON'
@@ -177,9 +193,9 @@ def p_struct_body(p):
     else:
         p[0] = p[1] + [p[2]]
 
-def p_statement_template_struct(p):
-    'statement : TEMPLATE LESS_THAN IDENTIFIER GREATER_THAN STRUCT IDENTIFIER IMPLEMENTS IDENTIFIER LBRACE struct_body RBRACE'
-    p[0] = ('template_struct', p[3], ('struct', p[6], p[10]), p[8])
+#def p_statement_template_struct(p):
+#    'statement : TEMPLATE LESS_THAN IDENTIFIER GREATER_THAN STRUCT IDENTIFIER IMPLEMENTS IDENTIFIER LBRACE struct_body RBRACE'
+#    p[0] = ('template_struct', p[3], ('struct', p[6], p[10]), p[8])
 
 def p_statement_method_implementation(p):
     'statement : IDENTIFIER COLON COLON IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE'

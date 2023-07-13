@@ -1,30 +1,3 @@
-# assuming the parser is defined in a file called parser.py
-#from parser import parser
-
-# this is a test string in your language
-#test_string = """
-#typedef int myInt;
-#namespace Math {
-#    struct test {
-#        int a;
-#    }
-#    class MyClass {
-#    public:
-#        int a;
-#    protected: 
-#        int b;
-#    private:
-#        int c;
-#    }
-#}
-#"""
-
-# parse the test string
-#result = parser.parse(test_string)
-
-# print the result
-#print(result)
-
 import argparse
 from parser import parser  # assuming your parser is in parser.py
 
