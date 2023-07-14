@@ -48,24 +48,29 @@ def p_statement_struct(p):
     'statement : STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON'
     p[0] = ('struct', p[2], p[4])        
 
+def p_member(p):
+    'member : TYPE IDENTIFIER SEMICOLON'
+    p[0] = ('member', p[1], p[2])
 
 def p_members(p):
     '''members : member
                | members member
                | method_declaration
-               | members method_declaration'''
+               | members method_declaration
+               | access_specifier_block
+               | members access_specifier_block'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[2]]
 
+def p_access_specifier_block(p):
+    'access_specifier_block : ACCESS_SPECIFIER COLON members'
+    p[0] = ('access_specifier_block', p[1], p[3])
+
 def p_method_declaration(p):
     'method_declaration : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
     p[0] = ('method_declaration', p[1], p[2], p[4])
-
-def p_member(p):
-    'member : TYPE IDENTIFIER SEMICOLON'
-    p[0] = ('member', p[1], p[2])
 
 def p_statement_function_no_params(p):
     'statement : TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE'
@@ -82,10 +87,6 @@ def p_parameters(p):
         p[0] = [(p[1], p[2])]
     else:
         p[0] = p[1] + [(p[3], p[4])]
-
-def p_access_specifier_block(p):
-    'access_specifier_block : ACCESS_SPECIFIER COLON members'
-    p[0] = (p[1], p[3])
 
 def p_statement_assign(p):
     'statement : IDENTIFIER EQUALS expression SEMICOLON'
@@ -177,25 +178,6 @@ def p_constructor(p):
 def p_destructor(p):
     'destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE'
     p[0] = ('destructor', p[6])
-
-# Add to your class_body function
-def p_struct_body(p):
-    '''struct_body : access_specifier_block
-                   | struct_body access_specifier_block
-                   | statement
-                   | struct_body statement
-                   | constructor
-                   | struct_body constructor
-                   | destructor
-                   | struct_body destructor'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[2]]
-
-#def p_statement_template_struct(p):
-#    'statement : TEMPLATE LESS_THAN IDENTIFIER GREATER_THAN STRUCT IDENTIFIER IMPLEMENTS IDENTIFIER LBRACE struct_body RBRACE'
-#    p[0] = ('template_struct', p[3], ('struct', p[6], p[10]), p[8])
 
 def p_statement_method_implementation(p):
     'statement : IDENTIFIER COLON COLON IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE'
