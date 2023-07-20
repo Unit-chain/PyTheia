@@ -64,8 +64,8 @@ tokens = (
     'CONSTRUCTOR',
     'DESTRUCTOR',
     'FUNCTION_DECLARATION',
+    'DOT',
     'HIDDEN',
-    'DOT'
 )
 
 t_PLUS               = r'\+'
@@ -256,5 +256,5 @@ def t_DOR(t):
     r'\.'
     return t
 # Build the lexer
-lexer = lex.lex()
+lexer = lex.lex(optimize=1)
 

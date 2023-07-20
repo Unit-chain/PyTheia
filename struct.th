@@ -3,11 +3,29 @@ typedef int myInt;
 namespace Math {	
 	template<T>
 	struct Point {
+		constructor(int a, int b) {
+		};
+		destructor() {
+		};
 		int x; 
 		int b;
 		int myMethod(int a, int b);	
-//	hidden:
+	hidden:
 		uint64 y;
+        	uint64 f;
+        	int myMethod2(int a, int b); 
 	};
+    struct Point2 {
+        int x; 
+        int b;
+        int myMethod(int a, int b); 
+	hidden:
+        	uint64 y;
+        	uint64 f;
+        	int myMethod2(int a, int b); 
+    };
 }
 
+int main(int a, int b) {
+	return 0;
+}

@@ -49,28 +49,51 @@ def p_statement_struct(p):
     p[0] = ('struct', p[2], p[4])        
 
 def p_member(p):
-    'member : TYPE IDENTIFIER SEMICOLON'
-    p[0] = ('member', p[1], p[2])
+    '''member : variable_declaration
+              | method_declaration
+              | access_specifier
+              | constructor
+              | destructor'''
+    if len(p) == 3:  # If it's an access_specifier.
+        p[0] = ('member', p[1], p[2])        
+    else:  # If it's a variable_declaration or method_declaration.
+        p[0] = ('member', p[1])
+
+def p_access_specifier(p):
+    '''access_specifier : HIDDEN COLON'''
+    p[0] = ('access_specifier', p[1])
+
+# Change the members_with_access_specifier rule to use the new access_specifier rule
+def p_members_with_access_specifier(p):
+    'members_with_access_specifier : access_specifier members'
+    p[0] = (p[1], p[2])
 
 def p_members(p):
     '''members : member
                | members member
                | method_declaration
                | members method_declaration
-               | access_specifier_block
-               | members access_specifier_block'''
+               | members_with_access_specifier
+               | members members_with_access_specifier'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[2]]
 
-def p_access_specifier_block(p):
-    'access_specifier_block : ACCESS_SPECIFIER COLON members'
-    p[0] = ('access_specifier_block', p[1], p[3])
+def p_variable_declaration(p):
+    '''variable_declaration : TYPE IDENTIFIER SEMICOLON
+                            | access_specifier variable_declaration'''
+    p[0] = ('variable_declaration', p[1], p[2])
 
 def p_method_declaration(p):
-    'method_declaration : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
+    '''method_declaration : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON
+                          | access_specifier method_declaration'''
     p[0] = ('method_declaration', p[1], p[2], p[4])
+
+def p_parameters(p):
+    '''parameters : parameters COMMA TYPE IDENTIFIER
+                  | TYPE IDENTIFIER
+                  | empty'''
 
 def p_statement_function_no_params(p):
     'statement : TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE'
@@ -171,14 +194,6 @@ def p_statement_interface(p):
     'statement : INTERFACE IDENTIFIER LBRACE members RBRACE SEMICOLON'
     p[0] = ('interface', p[2], p[4])
 
-def p_constructor(p):
-    'constructor : CONSTRUCTOR LPAREN parameters RPAREN LBRACE statements RBRACE'
-    p[0] = ('constructor', p[3], p[6])
-
-def p_destructor(p):
-    'destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE'
-    p[0] = ('destructor', p[6])
-
 def p_statement_method_implementation(p):
     'statement : IDENTIFIER COLON COLON IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE'
     p[0] = ('method_impl', p[1], p[4], p[6], p[9])
@@ -186,6 +201,17 @@ def p_statement_method_implementation(p):
 def p_statement_function_call(p):
     'statement : IDENTIFIER DOT IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
     p[0] = ('function_call', p[1], p[3], p[5])
+
+def p_constructor(p):
+    '''constructor : CONSTRUCTOR LPAREN parameters RPAREN LBRACE statements RBRACE SEMICOLON
+                   | CONSTRUCTOR LPAREN parameters RPAREN LBRACE RBRACE SEMICOLON'''
+    p[0] = ('constructor', p[2], p[4], p[7])
+
+def p_destructor(p):
+    '''destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE SEMICOLON
+                  | DESTRUCTOR LPAREN RPAREN LBRACE RBRACE SEMICOLON'''
+    p[0] = ('destructor', p[2], p[6])
+
 def p_empty(p):
     'empty :'
     pass
@@ -196,5 +222,5 @@ def p_error(p):
     else:
         print("Syntax error at EOF")
 
-parser = yacc.yacc()
+parser = yacc.yacc(debug=True)
 
