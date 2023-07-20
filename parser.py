@@ -24,14 +24,15 @@ def p_statement_namespace(p):
     p[0] = ('namespace', p[2], p[4])
 
 def p_statements(p):
-    '''statements : statement
-                  | statements statement
+    '''statements : statement_list
                   | empty'''
-    if len(p) == 2:  # The empty rule
-        if p[1] == ('empty',):
-            p[0] = []
-        else:
-            p[0] = [p[1]]
+    p[0] = p[1]
+
+def p_statement_list(p):
+    '''statement_list : statement_list statement
+                      | statement'''
+    if len(p) == 2:
+        p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[2]]
 
@@ -91,9 +92,17 @@ def p_method_declaration(p):
     p[0] = ('method_declaration', p[1], p[2], p[4])
 
 def p_parameters(p):
-    '''parameters : parameters COMMA TYPE IDENTIFIER
-                  | TYPE IDENTIFIER
+    '''parameters : parameter_list
                   | empty'''
+    p[0] = p[1]
+
+def p_parameter_list(p):
+    '''parameter_list : parameter_list COMMA TYPE IDENTIFIER
+                      | TYPE IDENTIFIER'''
+    if len(p) == 3:
+        p[0] = [(p[1], p[2])]
+    else:
+        p[0] = p[1] + [(p[3], p[4])]
 
 def p_statement_function_no_params(p):
     'statement : TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE'
@@ -203,14 +212,12 @@ def p_statement_function_call(p):
     p[0] = ('function_call', p[1], p[3], p[5])
 
 def p_constructor(p):
-    '''constructor : CONSTRUCTOR LPAREN parameters RPAREN LBRACE statements RBRACE SEMICOLON
-                   | CONSTRUCTOR LPAREN parameters RPAREN LBRACE RBRACE SEMICOLON'''
-    p[0] = ('constructor', p[2], p[4], p[7])
+    'constructor : CONSTRUCTOR LPAREN parameters RPAREN LBRACE statements RBRACE SEMICOLON'
+    p[0] = ('constructor', p[3], p[6])
 
 def p_destructor(p):
-    '''destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE SEMICOLON
-                  | DESTRUCTOR LPAREN RPAREN LBRACE RBRACE SEMICOLON'''
-    p[0] = ('destructor', p[2], p[6])
+    'destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE SEMICOLON'
+    p[0] = ('destructor', p[5])
 
 def p_empty(p):
     'empty :'
