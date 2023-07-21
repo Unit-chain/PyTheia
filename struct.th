@@ -6,7 +6,7 @@ namespace Math {
 		int method2(int a, int b);
 	};
 	template<T>
-	struct Point {
+	struct Point implements MyInterface {
 		constructor(int a, int b) {
 		};
 		destructor() {
@@ -14,13 +14,17 @@ namespace Math {
 		int x; 
 		int b;
 		int myMethod(int a, int b);	
-		//int test();
+		int test();
+		int test2() {
+			int a = 10 + 10;
+			return 0;
+		}
 	hidden:
 		uint64 y;
         	uint64 f;
         	int myMethod2(int a, int b); 
 	};
-    struct Point2 {
+    struct Point2 implements MyInterface {
         int x; 
         int b;
         int myMethod(int a, int b); 

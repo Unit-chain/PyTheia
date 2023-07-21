@@ -89,10 +89,16 @@ def p_variable_declaration(p):
 def p_method_declaration(p):
     '''method_declaration : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON
                           | TYPE IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE
+                          | TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE
+                          | TYPE IDENTIFIER LPAREN RPAREN SEMICOLON 
                           | access_specifier method_declaration'''
-    if len(p) == 7:  # If it's a method declaration with a semicolon.
+    if len(p) == 6:  # If it's a method declaration without parameters and with a semicolon.
+        p[0] = ('method_declaration', p[1], p[2], [])
+    elif len(p) == 7:  # If it's a method declaration with parameters and with a semicolon.
         p[0] = ('method_declaration', p[1], p[2], p[4])
-    elif len(p) == 9:  # If it's a full method declaration with a body.
+    elif len(p) == 8:  # If it's a method declaration without parameters and with a body.
+        p[0] = ('method_declaration', p[1], p[2], [], p[6])
+    elif len(p) == 9:  # If it's a method declaration with parameters and with a body.
         p[0] = ('method_declaration', p[1], p[2], p[4], p[7])
     else:  # If it's an access_specifier followed by a method_declaration.
         p[0] = ('method_declaration', p[1], p[2])
