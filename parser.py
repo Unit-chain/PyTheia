@@ -88,8 +88,14 @@ def p_variable_declaration(p):
 
 def p_method_declaration(p):
     '''method_declaration : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON
+                          | TYPE IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE
                           | access_specifier method_declaration'''
-    p[0] = ('method_declaration', p[1], p[2], p[4])
+    if len(p) == 7:  # If it's a method declaration with a semicolon.
+        p[0] = ('method_declaration', p[1], p[2], p[4])
+    elif len(p) == 9:  # If it's a full method declaration with a body.
+        p[0] = ('method_declaration', p[1], p[2], p[4], p[7])
+    else:  # If it's an access_specifier followed by a method_declaration.
+        p[0] = ('method_declaration', p[1], p[2])
 
 def p_parameters(p):
     '''parameters : parameter_list
@@ -103,6 +109,10 @@ def p_parameter_list(p):
         p[0] = [(p[1], p[2])]
     else:
         p[0] = p[1] + [(p[3], p[4])]
+
+#def p_external_function_definition(p):
+#    'external_function_definition : TYPE IDENTIFIER NAMESPACE_OPERATOR IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE' 
+#    p[0] = ('external_function', p[1], p[2], p[4], p[6], p[9])
 
 def p_statement_function_no_params(p):
     'statement : TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE'
@@ -202,10 +212,6 @@ def p_expression_number(p):
 def p_statement_interface(p):
     'statement : INTERFACE IDENTIFIER LBRACE members RBRACE SEMICOLON'
     p[0] = ('interface', p[2], p[4])
-
-def p_statement_method_implementation(p):
-    'statement : IDENTIFIER COLON COLON IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE'
-    p[0] = ('method_impl', p[1], p[4], p[6], p[9])
 
 def p_statement_function_call(p):
     'statement : IDENTIFIER DOT IDENTIFIER LPAREN parameters RPAREN SEMICOLON'

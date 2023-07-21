@@ -66,6 +66,7 @@ tokens = (
     'FUNCTION_DECLARATION',
     'DOT',
     'HIDDEN',
+    'DOUBLECOLON',
 )
 
 t_PLUS               = r'\+'
@@ -255,6 +256,7 @@ def t_HIDDEN(t):
 def t_DOR(t):
     r'\.'
     return t
+
 # Build the lexer
 lexer = lex.lex(optimize=1)
 

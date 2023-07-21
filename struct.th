@@ -23,9 +23,17 @@ namespace Math {
         	uint64 y;
         	uint64 f;
         	int myMethod2(int a, int b); 
+		int myMethod3(int a, int b) {
+			int a = 10 + 10;
+			return 0;
+		}
     };
 }
 
+int foo() {
+}
+
 int main(int a, int b) {
+	int a = 10 + 10;
 	return 0;
 }
