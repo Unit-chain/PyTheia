@@ -110,10 +110,6 @@ def p_parameter_list(p):
     else:
         p[0] = p[1] + [(p[3], p[4])]
 
-#def p_external_function_definition(p):
-#    'external_function_definition : TYPE IDENTIFIER NAMESPACE_OPERATOR IDENTIFIER LPAREN parameters RPAREN LBRACE statements RBRACE' 
-#    p[0] = ('external_function', p[1], p[2], p[4], p[6], p[9])
-
 def p_statement_function_no_params(p):
     'statement : TYPE IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE'
     p[0] = ('function', p[1], p[2], [], p[6])
@@ -224,6 +220,29 @@ def p_constructor(p):
 def p_destructor(p):
     'destructor : DESTRUCTOR LPAREN RPAREN LBRACE statements RBRACE SEMICOLON'
     p[0] = ('destructor', p[5])
+
+def p_interface(p):
+    'statement : INTERFACE IDENTIFIER LBRACE interface_members RBRACE SEMICOLON'
+    p[0] = ('interface', p[2], p[4])
+
+def p_interface_members(p):
+    '''interface_members : interface_member
+                         | interface_members interface_member
+                         | empty'''  # Allow for an empty interface
+    p[0] = [p[1]] if len(p) == 2 else p[1] + [p[2]]
+
+def p_interface_member(p):
+    '''interface_member : function_declaration_intrfc
+                        | function_declaration_intrfc_no_params'''
+    p[0] = ('member', p[1])
+
+def p_function_declaration_intrfc_no_params(p):
+    'function_declaration_intrfc_no_params : TYPE IDENTIFIER LPAREN RPAREN SEMICOLON'
+    p[0] = ('method_declaration', p[1], p[2], [])
+
+def p_function_declaration_intrfc(p):
+    'function_declaration_intrfc : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
+    p[0] = ('method_declaration', p[1], p[2], p[4])
 
 def p_empty(p):
     'empty :'

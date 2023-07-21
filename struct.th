@@ -1,6 +1,10 @@
 typedef int myInt;
 
 namespace Math {	
+	interface MyInterface {
+		int method();	
+		int method2(int a, int b);
+	};
 	template<T>
 	struct Point {
 		constructor(int a, int b) {
@@ -10,6 +14,7 @@ namespace Math {
 		int x; 
 		int b;
 		int myMethod(int a, int b);	
+		//int test();
 	hidden:
 		uint64 y;
         	uint64 f;
