@@ -41,13 +41,20 @@ def p_template(p):
     p[0] = ('template', p[3])
 
 def p_statement_template_struct(p):
-    'statement : template STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON'
-    p[0] = ('template_struct', p[1], ('struct', p[3], p[5]))
-
+    '''statement : template STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON
+                 | template STRUCT IDENTIFIER IMPLEMENTS IDENTIFIER LBRACE members RBRACE SEMICOLON'''
+    if len(p) == 8:
+        p[0] = ('template_struct', p[1], ('struct', p[3], p[5]))
+    else:
+        p[0] = ('template_struct', p[1], ('struct', p[3], 'implements', p[5], p[7]))
 
 def p_statement_struct(p):
-    'statement : STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON'
-    p[0] = ('struct', p[2], p[4])        
+    '''statement : STRUCT IDENTIFIER LBRACE members RBRACE SEMICOLON
+                 | STRUCT IDENTIFIER IMPLEMENTS IDENTIFIER LBRACE members RBRACE SEMICOLON'''
+    if len(p) == 7:
+        p[0] = ('struct', p[2], p[4])
+    else:
+        p[0] = ('struct', p[2], 'implements', p[4], p[6])
 
 def p_member(p):
     '''member : variable_declaration
