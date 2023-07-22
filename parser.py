@@ -3,7 +3,7 @@ from lexer import tokens  # assuming your lexer is in lexer.py
 
 precedence = (
     ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE'),
+    ('left', 'TIMES', 'DIVIDE', 'MOD'),
     ('left', 'BIT_SHIFT_RIGHT', 'BIT_SHIFT_LEFT', 'AND', 'OR', 'XOR'),
 )
 
@@ -158,6 +158,7 @@ def p_expression_binop(p):
                   | expression BIT_SHIFT_LEFT expression
                   | expression AND expression
                   | expression OR expression
+                  | expression MOD expression
                   | expression XOR expression'''
     p[0] = (p[2], p[1], p[3])
 
@@ -214,6 +215,10 @@ def p_statement_while(p):
     'statement : WHILE LPAREN expression RPAREN LBRACE statements RBRACE'
     p[0] = ('while', p[3], p[6])
 
+def p_statement_for(p):
+    'statemnt : FOR LPAREN RPAREN LBRACE statements RBRACE'
+    p[0] = ('for', p[3], p[6])
+
 def p_expression_number(p):
     'expression : NUMBER'
     p[0] = ('number', p[1])
@@ -256,6 +261,21 @@ def p_function_declaration_intrfc_no_params(p):
 def p_function_declaration_intrfc(p):
     'function_declaration_intrfc : TYPE IDENTIFIER LPAREN parameters RPAREN SEMICOLON'
     p[0] = ('method_declaration', p[1], p[2], p[4])
+
+#def p_namespace_nesting(p):
+#    '''namespace_nesting : namespace_nesting NAMESPACE_OPERATOR IDENTIFIER
+#                         | IDENTIFIER NAMESPACE_OPERATOR IDENTIFIER'''
+#    if len(p) == 4:  # This is the recursive case.
+#        # Here, p[1] is the already processed part of the namespace,
+#        # p[2] is the "::" operator, and p[3] is the next part of the namespace.
+#        p[0] = p[1] + p[2] + p[3]  # Concatenate these parts to form the full namespace.
+#    else:  # This is the base case.
+#        # Here, p[1] is the first part of the namespace.
+#        p[0] = p[1]
+#
+#def p_object_usage(p):
+#    'object_usage : namespace_nesting IDENTIFIER SEMICOLON'
+#    p[0] = ('object_usage', p[1], p[2])
 
 def p_empty(p):
     'empty :'

@@ -47,5 +47,16 @@ int foo() {
 
 int main(int a, int b) {
 	int a = 10 + 10;
+	//Math::Point a;
+	int b = 10 >> 1 + 1;
+	int c = 10 << 1;
+	int d = 10 ^ 1;
+	int e = 10 & 2;
+	int f = 10 | 2;
+	int g = 10 % 2;
+	int h = 10 / 2;
+	int j = 10 + 2;
+	int k = 10 - 2; 
+	int l = 10 * 2;
 	return 0;
 }
