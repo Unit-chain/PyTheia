@@ -1,0 +1,33 @@
+typedef int myInt;
+
+namespace Math {
+	typedef int myInt;
+	interface MyInterface {
+		int method();	
+		int method2(int a, int b);
+	};
+	interface MyInterface2 {
+		int method();	
+		int method2(int a, int b);
+	};
+	template<t>
+	struct notMath {
+
+	}
+	struct notMath {
+
+	}
+
+}
+
+namespace Math2 {
+	typedef int myInt;
+	interface MyInterface {
+		int method();	
+		int method2(int a, int b);
+	};
+	interface MyInterface2 {
+		int method();	
+		int method2(int a, int b);
+	};
+}
